@@ -35,16 +35,22 @@ def get_binary_dependencies(binary):
     
     return parse_ldd_output(proc.stdout.decode('utf-8'))
 
-def print_dependencies_recursivelly(binary):
+def print_dependencies_recursivelly(binary, full_path):
     deps = get_binary_dependencies(binary)
 
     visited_dependencies.append(binary)
 
     for dependency in deps:
-        print(f'"{binary}" -> "{dependency}"')
+        if full_path == True:
+            print(f'"{binary}" -> "{dependency}"')
+        else:
+            bin_basename = os.path.basename(binary)
+            dep_basename = os.path.basename(dependency)
+            print(f'"{bin_basename}" -> "{dep_basename}"')
+
         if dependency in visited_dependencies:
             return
-        print_dependencies_recursivelly(dependency)
+        print_dependencies_recursivelly(dependency, full_path)
 
 def main():
     parser = argparse.ArgumentParser(prog='deptree',
@@ -60,7 +66,7 @@ def main():
         print(f'deptree: format \'{arguments.format}\' is not supported, try {SUPPORTED_PRINT_FORMATS} formats instead')
 
     if arguments.format == 'dot':
-        print_dependencies_recursivelly(arguments.elf)
+        print_dependencies_recursivelly(arguments.elf, arguments.print_full_path)
     elif arguments.format == 'list-newline':
         print('deptree: not implemented yet')
 
