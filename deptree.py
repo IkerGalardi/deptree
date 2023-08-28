@@ -68,7 +68,7 @@ def main():
     if arguments.format == 'dot':
         print_dependencies_recursivelly(arguments.elf, arguments.print_full_path, '"{binary}" -> "{dependency}"')
     elif arguments.format == 'list':
-        print('deptree: not implemented yet')
+        print_dependencies_recursivelly(arguments.elf, arguments.print_full_path, '"{dependency}"')
 
 if __name__ == '__main__':
     main()
